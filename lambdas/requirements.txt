@@ -1,0 +1,9 @@
+flake8
+mypy
+black
+aws-lambda-powertools
+boto3
+boto3-stubs
+boto3-stubs[sns]
+boto3-stubs[sqs]
+pytest
