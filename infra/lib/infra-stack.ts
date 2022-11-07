@@ -9,42 +9,41 @@ export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
-
-    const queue = new sqs.Queue(this, "InfraQueue", {
-      queueName: "InfraQueue",
+    const domainQueue = new sqs.Queue(this, "DomainQueue", {
+      queueName: "DomainQueue",
       visibilityTimeout: cdk.Duration.seconds(300),
     });
-    const topic = new sns.Topic(this, "InfraTopic", {
-      topicName: "InfraTopic",
-    });
-    new sns.Subscription(this, "InfraSub", {
-      topic,
-      protocol: sns.SubscriptionProtocol.SQS,
-      endpoint: queue.queueArn,
-    });
-    const powerToolsLayer = lambda.LayerVersion.fromLayerVersionArn(
+    const subscriptionBoughtSNSTopic = new sns.Topic(
       this,
-      "lambda-powertools",
-      `arn:aws:lambda:us-east-1:017000801446:layer:AWSLambdaPowertoolsPythonV2:12`
+      "SubscriptionBought",
+      {
+        topicName: "SubscriptionBought",
+      }
     );
+    new sns.Subscription(this, "SubscriptionBoughtSub", {
+      topic: subscriptionBoughtSNSTopic,
+      protocol: sns.SubscriptionProtocol.SQS,
+      endpoint: domainQueue.queueArn,
+    });
+
     const lambdaPublisher = new lambda.Function(this, "LambdaPublisher", {
       functionName: "LambdaPublisher",
       description: "Lambda that publishes to a SNS",
       runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset("../lambdas/src"),
       handler: "subscription_bought_publisher.handler",
-      layers: [powerToolsLayer],
       environment: {
-        TOPIC_ARN: topic.topicArn,
+        SUBSCRIPTION_BOUGHT_TOPIC_ARN: subscriptionBoughtSNSTopic.topicArn,
       },
     });
-    topic.grantPublish(lambdaPublisher.role!!);
+    subscriptionBoughtSNSTopic.grantPublish(lambdaPublisher.role!!);
+
     const api = new apiGateway.RestApi(this, "RestApi", {
       restApiName: "RestApi",
     });
-    api.root.addMethod(
-      "GET",
+    const buySubscription = api.root.addResource("buy_subscription");
+    buySubscription.addMethod(
+      "POST",
       new apiGateway.LambdaIntegration(lambdaPublisher)
     );
   }

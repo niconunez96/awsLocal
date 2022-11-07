@@ -3,7 +3,7 @@ version: '3.0'
 services:
   localstack:
     image: localstack/localstack:latest
-    environment: 
+    environment:
       - AWS_DEFAULT_REGION=us-east-1
       - EDGE_PORT=4566
     ports:
@@ -11,3 +11,8 @@ services:
     volumes:
       - "${TMPDIR:-/tmp/localstack}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+  lambdas-integration-tests:
+    build: "./lambdas"
+    environment:
+      - ENDPOINT_URL=http://localstack:4566
+      - SQS_DOMAIN_QUEUE=http://localstack:4566/000000000000/DomainQueue
