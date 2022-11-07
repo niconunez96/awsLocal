@@ -16,3 +16,4 @@ services:
     environment:
       - ENDPOINT_URL=http://localstack:4566
       - SQS_DOMAIN_QUEUE=http://localstack:4566/000000000000/DomainQueue
+      - SUBSCRIPTION_BOUGHT_TOPIC_ARN=arn:aws:sns:us-east-1:000000000000:SubscriptionBought
