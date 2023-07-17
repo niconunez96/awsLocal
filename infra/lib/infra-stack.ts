@@ -31,9 +31,9 @@ export class InfraStack extends cdk.Stack {
       description: "Lambda that publishes to a SNS",
       runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset("../lambdas/src"),
-      handler: "subscription_bought_publisher.handler",
+      handler: "unsubscription_survey_saver.handler",
       environment: {
-        SUBSCRIPTION_BOUGHT_TOPIC_ARN: unsubscriptionSurveySaverTopic.topicArn,
+        UNSUBSCRIPTION_SURVEY_SUBMITTED: unsubscriptionSurveySaverTopic.topicArn,
       },
     });
     unsubscriptionSurveySaverTopic.grantPublish(lambdaPublisher.role!!);
