@@ -1,44 +1,4 @@
-provider "aws" {
-
-  access_key = "test"
-  secret_key = "test"
-  region     = "us-east-1"
-}
-
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
-resource "aws_iam_role" "iam_for_lambda" {
-  name               = "iam_for_lambda"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
-}
-
-data "archive_file" "lambda" {
-  type        = "zip"
-  source_file = "../lambdas/src/subscription_bought_publisher.py"
-  output_path = "subscription_bought_publisher.zip"
-}
-
-resource "aws_lambda_function" "test_function" {
-  role          = aws_iam_role.iam_for_lambda.arn
-  function_name = "test_function"
-  handler       = "subscription_bought_publisher.handler"
-  filename      = "subscription_bought_publisher.zip"
-  runtime       = "python3.9"
-
-  source_code_hash = data.archive_file.lambda.output_base64sha256
-
-  tags = {
-    "env" = var.env
-  }
+module "unsubscription_survey_saver" {
+  source = "./unsubscription_survey_saver"
+  env = var.env
 }
