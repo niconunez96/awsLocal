@@ -15,5 +15,5 @@ services:
     build: "./lambdas"
     environment:
       - ENDPOINT_URL=http://localstack:4566
-      - SQS_DOMAIN_QUEUE=http://localstack:4566/000000000000/DomainQueue
-      - SUBSCRIPTION_BOUGHT_TOPIC_ARN=arn:aws:sns:us-east-1:000000000000:SubscriptionBought
+      - SQS_DOMAIN_QUEUE=http://localhost:4566/000000000000/integration_test_queue
+      - SUBSCRIPTION_BOUGHT_TOPIC_ARN=arn:aws:sns:us-east-1:000000000000:unsubscription_survey_submitted
