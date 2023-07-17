@@ -2,10 +2,10 @@ import json
 import os
 
 import boto3
-from aws_lambda_powertools.utilities.data_classes import (
-    APIGatewayProxyEvent,
-    event_source,
-)
+# from aws_lambda_powertools.utilities.data_classes import (
+#     APIGatewayProxyEvent,
+#     event_source,
+# )
 
 session = boto3.Session()
 
@@ -19,8 +19,8 @@ else:
 topic = sns_resource.Topic(str(os.getenv("UNSUBSCRIPTION_SURVEY_SUBMITTED")))
 
 
-@event_source(data_class=APIGatewayProxyEvent)
-def handler(event: APIGatewayProxyEvent, context):
+# @event_source(data_class=APIGatewayProxyEvent)
+def handler(event, context):
     response = topic.publish(Message=json.dumps({"id": "1", "metadata": {"correlation_id": ""}}))
     print(response)
     return {"statusCode": 200, "body": "Hello world"}

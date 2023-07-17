@@ -34,6 +34,7 @@ export class InfraStack extends cdk.Stack {
       handler: "unsubscription_survey_saver.handler",
       environment: {
         UNSUBSCRIPTION_SURVEY_SUBMITTED: unsubscriptionSurveySaverTopic.topicArn,
+        ENDPOINT_URL: "http://localstack:4566",
       },
     });
     unsubscriptionSurveySaverTopic.grantPublish(lambdaPublisher.role!!);
@@ -41,7 +42,7 @@ export class InfraStack extends cdk.Stack {
     const api = new apiGateway.RestApi(this, "RestApi", {
       restApiName: "RestApi",
     });
-    const buySubscription = api.root.addResource("buy_subscription");
+    const buySubscription = api.root.addResource("unsubscription_survey");
     buySubscription.addMethod(
       "POST",
       new apiGateway.LambdaIntegration(lambdaPublisher)

@@ -21,4 +21,10 @@ resource "aws_lambda_function" "test_function" {
   tags = {
     "env" = var.env
   }
+  environment {
+    variables = {
+      UNSUBSCRIPTION_SURVEY_SUBMITTED = aws_sns_topic.unsubscription_survey_submitted.arn
+      ENDPOINT_URL                    = var.env == "test" ? "http://localstack:4566" : ""
+    }
+  }
 }
