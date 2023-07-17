@@ -9,21 +9,21 @@ export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const domainQueue = new sqs.Queue(this, "DomainQueue", {
-      queueName: "DomainQueue",
+    const integrationTestQueue = new sqs.Queue(this, "integration_test_queue", {
+      queueName: "integration_test_queue",
       visibilityTimeout: cdk.Duration.seconds(300),
     });
-    const subscriptionBoughtSNSTopic = new sns.Topic(
+    const unsubscriptionSurveySaverTopic = new sns.Topic(
       this,
-      "SubscriptionBought",
+      "unsubscription_survey_submitted",
       {
-        topicName: "SubscriptionBought",
+        topicName: "unsubscription_survey_submitted",
       }
     );
-    new sns.Subscription(this, "SubscriptionBoughtSub", {
-      topic: subscriptionBoughtSNSTopic,
+    new sns.Subscription(this, "UnsubscriptionSurveyTestSubscription", {
+      topic: unsubscriptionSurveySaverTopic,
       protocol: sns.SubscriptionProtocol.SQS,
-      endpoint: domainQueue.queueArn,
+      endpoint: integrationTestQueue.queueArn,
     });
 
     const lambdaPublisher = new lambda.Function(this, "LambdaPublisher", {
@@ -33,10 +33,10 @@ export class InfraStack extends cdk.Stack {
       code: lambda.Code.fromAsset("../lambdas/src"),
       handler: "subscription_bought_publisher.handler",
       environment: {
-        SUBSCRIPTION_BOUGHT_TOPIC_ARN: subscriptionBoughtSNSTopic.topicArn,
+        SUBSCRIPTION_BOUGHT_TOPIC_ARN: unsubscriptionSurveySaverTopic.topicArn,
       },
     });
-    subscriptionBoughtSNSTopic.grantPublish(lambdaPublisher.role!!);
+    unsubscriptionSurveySaverTopic.grantPublish(lambdaPublisher.role!!);
 
     const api = new apiGateway.RestApi(this, "RestApi", {
       restApiName: "RestApi",
