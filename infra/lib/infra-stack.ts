@@ -13,7 +13,7 @@ export class InfraStack extends cdk.Stack {
       queueName: "integration_test_queue",
       visibilityTimeout: cdk.Duration.seconds(300),
     });
-    const unsubscriptionSurveySaverTopic = new sns.Topic(
+    const unsubscriptionSurveySubmittedTopic = new sns.Topic(
       this,
       "unsubscription_survey_submitted",
       {
@@ -21,7 +21,7 @@ export class InfraStack extends cdk.Stack {
       }
     );
     new sns.Subscription(this, "UnsubscriptionSurveyTestSubscription", {
-      topic: unsubscriptionSurveySaverTopic,
+      topic: unsubscriptionSurveySubmittedTopic,
       protocol: sns.SubscriptionProtocol.SQS,
       endpoint: integrationTestQueue.queueArn,
     });
@@ -33,11 +33,12 @@ export class InfraStack extends cdk.Stack {
       code: lambda.Code.fromAsset("../lambdas/src"),
       handler: "unsubscription_survey_saver.handler",
       environment: {
-        UNSUBSCRIPTION_SURVEY_SUBMITTED: unsubscriptionSurveySaverTopic.topicArn,
+        UNSUBSCRIPTION_SURVEY_SUBMITTED:
+          unsubscriptionSurveySubmittedTopic.topicArn,
         ENDPOINT_URL: "http://localstack:4566",
       },
     });
-    unsubscriptionSurveySaverTopic.grantPublish(lambdaPublisher.role!!);
+    unsubscriptionSurveySubmittedTopic.grantPublish(lambdaPublisher.role!!);
 
     const api = new apiGateway.RestApi(this, "RestApi", {
       restApiName: "RestApi",
@@ -47,5 +48,15 @@ export class InfraStack extends cdk.Stack {
       "POST",
       new apiGateway.LambdaIntegration(lambdaPublisher)
     );
+
+    new cdk.CfnOutput(this, "API_GATEWAY", {
+      value: api.url,
+    });
+    new cdk.CfnOutput(this, "UNSUBSCRIPTION_SURVEY_SAVED_TOPIC", {
+      value: unsubscriptionSurveySubmittedTopic.topicArn,
+    });
+    new cdk.CfnOutput(this, "INTEGRATION_TEST_SQS", {
+      value: integrationTestQueue.queueArn,
+    });
   }
 }

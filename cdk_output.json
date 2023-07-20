@@ -1,0 +1,8 @@
+{
+  "InfraStack": {
+    "RestApiEndpoint0551178A": "https://h2qrbotrqu.execute-api.localhost.localstack.cloud:4566/prod/",
+    "APIGATEWAY": "https://h2qrbotrqu.execute-api.localhost.localstack.cloud:4566/prod/",
+    "UNSUBSCRIPTIONSURVEYSAVEDTOPIC": "arn:aws:sns:us-east-1:000000000000:unsubscription_survey_submitted",
+    "INTEGRATIONTESTSQS": "arn:aws:sqs:us-east-1:000000000000:integration_test_queue"
+  }
+}
