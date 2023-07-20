@@ -1,0 +1,17 @@
+{
+  "API_GATEWAY": {
+    "sensitive": false,
+    "type": "string",
+    "value": "https://zuycansmid.execute-api.eu-west-1.amazonaws.com/"
+  },
+  "INTEGRATION_TEST_SQS": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:sqs:eu-west-1:000000000000:integration_test_queue"
+  },
+  "UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:sns:eu-west-1:000000000000:unsubscription_survey_submitted"
+  }
+}

@@ -8,7 +8,7 @@ tf-init:
 tf-plan:
 	tflocal -chdir=./tf_infra plan
 tf-apply:
-	tflocal -chdir=./tf_infra apply -auto-approve && tflocal output -json > ../tf_output.json
+	tflocal -chdir=./tf_infra apply -auto-approve && tflocal -chdir=./tf_infra output -json > tf_output.json
 
 cdk-init:
 	cd ./infra && cdklocal bootstrap
