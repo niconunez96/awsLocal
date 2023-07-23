@@ -1,5 +1,5 @@
 output "API_GATEWAY" {
-  value = module.unsubscription_survey_saver.api_gateway
+  value = "https://${aws_api_gateway_rest_api.tf_rest_api.id}.execute-api.localhost.localstack.cloud:4566/prod/"
 }
 
 output "INTEGRATION_TEST_SQS" {
