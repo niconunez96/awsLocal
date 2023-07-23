@@ -8,8 +8,10 @@ from src.unsubscription_survey_saver import handler
 
 
 def test_it_should_publish_to_sns_topic_and_reach_sqs():
-    sqs = boto3.resource("sqs", endpoint_url=os.getenv("ENDPOINT_URL"))
-    sqs = sqs.Queue(os.getenv("SQS_TEST_QUEUE"))
+    print("SQS", os.getenv("INTEGRATION_TEST_SQS"))
+    print("URL", os.getenv("ENDPOINT_URL"))
+    sqs = boto3.resource("sqs", endpoint_url=os.getenv("ENDPOINT_URL"), region_name="us-east-1")
+    sqs = sqs.Queue(os.getenv("INTEGRATION_TEST_SQS"))
     sqs.purge()
 
     handler(

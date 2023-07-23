@@ -16,7 +16,7 @@ if os.getenv("ENDPOINT_URL"):
 else:
     sns_resource = session.resource("sns")
 
-topic = sns_resource.Topic(str(os.getenv("UNSUBSCRIPTION_SURVEY_SUBMITTED")))
+topic = sns_resource.Topic(str(os.getenv("UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC")))
 
 
 # @event_source(data_class=APIGatewayProxyEvent)

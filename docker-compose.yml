@@ -9,11 +9,23 @@ services:
     ports:
       - '4566-4583:4566-4583'
     volumes:
-      - "/tmp/localstack:/var/lib/localstack"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+  localstack_dynamodbadmin:
+    image: instructure/dynamo-local-admin
+    networks:
+      - default
+    depends_on:
+      - localstack
+    links:
+      - localstack
+    ports:
+      - "8002:8000"
+    environment:
+      - DYNAMO_ENDPOINT=http://localstack:4566
   lambdas-integration-tests:
     build: "./lambdas"
     environment:
       - ENDPOINT_URL=http://localstack:4566
-      - SQS_TEST_QUEUE=http://localhost:4566/000000000000/integration_test_queue
-      - UNSUBSCRIPTION_SURVEY_SUBMITTED=arn:aws:sns:us-east-1:000000000000:unsubscription_survey_submitted
+    env_file:
+      .env

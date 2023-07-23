@@ -17,5 +17,9 @@ cdk-diff:
 cdk-apply:
 	cd ./infra && cdklocal deploy --outputs-file ../cdk_output.json
 
+cdk-save-env:
+	jq .InfraStack cdk_output.json | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .env	
+tf-save-env:
+	jq -r 'to_entries|map("\(.key)=\(.value.value|tostring)")|.[]' tf_output.json > .env	
 test:
 	docker-compose run lambdas-integration-tests
