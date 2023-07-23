@@ -4,6 +4,11 @@ Simple guide to compare Terraform and CDK tools.
 
 ## Setup
 
+### General
+
+- Docker - Docker Compose
+- brew install jq
+
 ### CDK
 
 - `npm install -g aws-cdk-local aws-cdk`
