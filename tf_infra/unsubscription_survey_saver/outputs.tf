@@ -1,5 +1,5 @@
 output "api_gateway" {
-  value = aws_api_gateway_deployment.tf_rest_api.invoke_url
+  value = "https://${aws_api_gateway_rest_api.tf_rest_api.id}.execute-api.localhost.localstack.cloud:4566/prod/"
 }
 
 output "integration_test_sqs" {

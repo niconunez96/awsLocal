@@ -2,7 +2,7 @@
   "API_GATEWAY": {
     "sensitive": false,
     "type": "string",
-    "value": "https://jqgn2gn0zz.execute-api.us-east-1.amazonaws.com/"
+    "value": "https://jqgn2gn0zz.execute-api.localhost.localstack.cloud:4566/prod/"
   },
   "INTEGRATION_TEST_SQS": {
     "sensitive": false,
