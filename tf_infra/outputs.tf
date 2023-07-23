@@ -9,3 +9,7 @@ output "INTEGRATION_TEST_SQS" {
 output "UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC" {
   value = module.unsubscription_survey_saver.unsubscription_survey_submitted_topic
 }
+
+output "UNSUBSCRIPTION_SURVEY_TABLE" {
+  value = module.unsubscription_survey_saver.unsubscription_survey_table
+}

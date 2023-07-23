@@ -2,16 +2,21 @@
   "API_GATEWAY": {
     "sensitive": false,
     "type": "string",
-    "value": "https://crdud5rsa4.execute-api.us-east-1.amazonaws.com/"
+    "value": "https://jqgn2gn0zz.execute-api.us-east-1.amazonaws.com/"
   },
   "INTEGRATION_TEST_SQS": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:sqs:us-east-1:000000000000:integration_test_queue"
+    "value": "http://localhost:4566/000000000000/integration_test_queue"
   },
   "UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC": {
     "sensitive": false,
     "type": "string",
     "value": "arn:aws:sns:us-east-1:000000000000:unsubscription_survey_submitted"
+  },
+  "UNSUBSCRIPTION_SURVEY_TABLE": {
+    "sensitive": false,
+    "type": "string",
+    "value": "UnsubscriptionSurvey"
   }
 }

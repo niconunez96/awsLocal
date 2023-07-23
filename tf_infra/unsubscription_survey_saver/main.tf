@@ -23,8 +23,30 @@ resource "aws_lambda_function" "test_function" {
   }
   environment {
     variables = {
-      UNSUBSCRIPTION_SURVEY_SUBMITTED = aws_sns_topic.unsubscription_survey_submitted.arn
+      UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC = aws_sns_topic.unsubscription_survey_submitted.arn
+      UNSUBSCRIPTION_SURVEY_TABLE     = aws_dynamodb_table.unsubscription_survey.name
       ENDPOINT_URL                    = var.env == "test" ? "http://localstack:4566" : ""
     }
+  }
+}
+
+resource "aws_dynamodb_table" "unsubscription_survey" {
+  name         = "UnsubscriptionSurvey"
+  hash_key     = "userId"
+  billing_mode = "PAY_PER_REQUEST"
+
+  attribute {
+    name = "userId"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "TimeToExist"
+    enabled        = false
+  }
+
+  tags = {
+    Name        = "UnsubscriptionSurvey"
+    Environment = var.env
   }
 }
