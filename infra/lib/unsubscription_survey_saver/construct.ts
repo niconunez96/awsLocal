@@ -16,18 +16,6 @@ export class UnsubscriptionSurveySaver extends Construct {
     this.topic = new sns.Topic(this, "unsubscription_survey_submitted", {
       displayName: "Unsubscription Survey Submitted",
     });
-    this.lambda = new lambda.Function(this, "LambdaPublisher", {
-      description: "Lambda that publishes to a SNS",
-      runtime: lambda.Runtime.PYTHON_3_9,
-      code: lambda.Code.fromAsset("../lambdas/src"),
-      handler: "unsubscription_survey_saver.handler",
-      environment: {
-        UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC: this.topic.topicArn,
-        ENDPOINT_URL: stage === "test" ? "http://localstack:4566" : "",
-      },
-    });
-    this.topic.grantPublish(this.lambda.role!!);
-
     const unsubscriptionSurveyTable = new dynamodb.Table(
       this,
       "UnsubscriptionSurvey",
@@ -38,6 +26,19 @@ export class UnsubscriptionSurveySaver extends Construct {
         },
       }
     );
+
+    this.lambda = new lambda.Function(this, "LambdaPublisher", {
+      description: "Lambda that publishes to a SNS",
+      runtime: lambda.Runtime.PYTHON_3_9,
+      code: lambda.Code.fromAsset("../lambdas/src"),
+      handler: "unsubscription_survey_saver.handler",
+      environment: {
+        UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC: this.topic.topicArn,
+        UNSUBSCRIPTION_SURVEY_TABLE: unsubscriptionSurveyTable.tableName,
+        ENDPOINT_URL: stage === "test" ? "http://localstack:4566" : "",
+      },
+    });
+    this.topic.grantPublish(this.lambda.role!!);
     unsubscriptionSurveyTable.grantWriteData(this.lambda.role!!);
 
     if (stage === "test") {
@@ -62,5 +63,8 @@ export class UnsubscriptionSurveySaver extends Construct {
     new cdk.CfnOutput(this, "UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC", {
       value: this.topic.topicArn,
     }).overrideLogicalId("UNSUBSCRIPTION_SURVEY_SUBMITTED_TOPIC");
+    new cdk.CfnOutput(this, "UNSUBSCRIPTION_SURVEY_TABLE", {
+      value: unsubscriptionSurveyTable.tableName,
+    }).overrideLogicalId("UNSUBSCRIPTION_SURVEY_TABLE");
   }
 }
