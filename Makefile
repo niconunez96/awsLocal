@@ -1,3 +1,8 @@
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 up:
 	docker-compose up -d --build
 down:
@@ -21,5 +26,11 @@ cdk-save-env:
 	jq .InfraStack cdk_output.json | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .env	
 tf-save-env:
 	jq -r 'to_entries|map("\(.key)=\(.value.value|tostring)")|.[]' tf_output.json > .env	
+
+build-test:
+	docker-compose build lambdas-integration-tests
 test:
 	docker-compose run lambdas-integration-tests
+
+check-endpoint:
+	https POST $(API_GATEWAY)unsubscription_survey user_id=$$RANDOM answer_1=check_endpoint 

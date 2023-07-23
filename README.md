@@ -8,6 +8,7 @@ Simple guide to compare Terraform and CDK tools.
 
 - Docker - Docker Compose
 - brew install jq
+- brew install httpie
 
 ### CDK
 
